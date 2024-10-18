@@ -3,10 +3,11 @@ import { useState, useEffect, useContext } from 'react'
 import { CheckMark } from '@/components/CheckMark'
 
 import { AuthenticationContext } from '@/contexts/AuthenticationContext'
-import { createUserWithEmailAndPassword} from '@firebase/auth'
+import {  signInWithEmailAndPassword} from '@firebase/auth'
 import { useNavigation, Link } from 'expo-router'
 
-export default function AuthenticationScreen() {
+export default function SignIn() {
+
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
     // validation
@@ -16,8 +17,8 @@ export default function AuthenticationScreen() {
     const fbauth = useContext( AuthenticationContext )
     const navigation = useNavigation()
 
-    const SignUpUser = () => {
-        createUserWithEmailAndPassword( fbauth, email, password )
+    const SignInUser = () => {
+        signInWithEmailAndPassword( fbauth, email, password )
         .then( (user) => {
             navigation.navigate("(tabs)")
         })
@@ -49,7 +50,7 @@ export default function AuthenticationScreen() {
 
     return(
         <View style={ styles.container }>
-            <Text style={ styles.title }>Sign up for an account</Text>
+            <Text style={ styles.title }>Sign in to your account</Text>
             {/* email address */}
             <Text style={ styles.label }>
                 Email address
@@ -76,12 +77,12 @@ export default function AuthenticationScreen() {
             <Pressable 
                 style={ (validEmail && validPassword ) ? styles.button : styles.buttonDisabled } 
                 disabled={ (validEmail && validPassword) ? false : true }
-                onPress={ () => SignUpUser() }
+                onPress={ () => SignInUser() }
             >
-                <Text style={ styles.buttonText } >Sign up</Text>
+                <Text style={ styles.buttonText } >Sign in</Text>
             </Pressable>
-            <Link href="/login">
-                <Text>Go to sign in page</Text>
+            <Link href="/">
+                <Text>Go to sign up page</Text>
             </Link>
         </View>
     )
