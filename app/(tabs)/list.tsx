@@ -13,6 +13,7 @@ export default function List( props:any ) {
     const db = useContext( FirestoreContext )
     const auth = useContext( AuthenticationContext )
 
+    // data inside component
     const listData:ItemPrototype[] = [
         { id: 1, name: "item 1", status:true},
         { id: 2, name: "item 2", status: false},
