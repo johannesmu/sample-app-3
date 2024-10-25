@@ -11,8 +11,10 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { firebaseConfig } from '@/config/Config'
 import { initializeApp } from '@firebase/app'
 import { getAuth } from '@firebase/auth'
+import { getFirestore } from '@firebase/firestore'
 // contexts
 import { AuthenticationContext } from '@/contexts/AuthenticationContext'
+import { FirestoreContext } from '@/contexts/FirestoreContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -23,8 +25,9 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  const FBapp = initializeApp( firebaseConfig )
-  const FBauth = getAuth( FBapp )
+  const FBapp = initializeApp(firebaseConfig)
+  const FBauth = getAuth(FBapp)
+  const FBfs = getFirestore(FBapp)
 
   useEffect(() => {
     if (loaded) {
@@ -38,10 +41,12 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AuthenticationContext.Provider value={ FBauth} >
-        <SafeAreaView style={ styles.container }>
-          <Stack screenOptions={{headerShown: false}}/>
-        </SafeAreaView>
+      <AuthenticationContext.Provider value={FBauth} >
+        <FirestoreContext.Provider value={FBfs}>
+          <SafeAreaView style={styles.container}>
+            <Stack screenOptions={{ headerShown: false }} />
+          </SafeAreaView>
+        </FirestoreContext.Provider>
       </AuthenticationContext.Provider>
     </ThemeProvider>
   );
