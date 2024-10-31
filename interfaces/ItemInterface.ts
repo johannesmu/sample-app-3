@@ -1,5 +1,5 @@
 export interface ItemPrototype {
-    id:number,
+    id:string,
     name:string,
     status:boolean,
 }
