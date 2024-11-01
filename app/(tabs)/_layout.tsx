@@ -7,6 +7,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const showDetailTab = false
 
   return (
     <Tabs
@@ -50,6 +51,7 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen name="detail" options={{href:null}}></Tabs.Screen>
     </Tabs>
   );
 }
