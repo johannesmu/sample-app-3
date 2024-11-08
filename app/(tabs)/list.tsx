@@ -15,10 +15,7 @@ export default function List(props: any) {
     const db = useContext(FirestoreContext)
     const auth = useContext(AuthenticationContext)
     const navigation = useNavigation()
-    // path to user data collection
-    let userDataPath: null | string = null
-
-
+   
     const [datastate, setDatastate] = useState<ItemPrototype | any>([])
     const [modalVisible, setModalVisible] = useState<boolean>(false)
     const [itemName, setItemName] = useState<string | undefined>()
@@ -26,16 +23,15 @@ export default function List(props: any) {
 
     useEffect(() => {
         if (dataloaded == false && auth.currentUser) {
-            userDataPath = `users/${auth.currentUser.uid}/documents`
             getItems()
             setDataLoaded(true)
         }
-    }, [dataloaded, auth])
+    }, [dataloaded])
 
     const addItem = async () => {
         const userid = auth.currentUser.uid
         if (userid) {
-            const path = collection(db, userDataPath)
+            const path = collection(db, `users/${auth.currentUser.uid}/documents`)
             const docRef = addDoc(path, {
                 name: itemName, status: false
             })
@@ -46,7 +42,7 @@ export default function List(props: any) {
 
     const getItems = async () => {
         if (auth.currentUser.uid) {
-            const path = collection(db, userDataPath)
+            const path = collection(db, `users/${auth.currentUser.uid}/documents`)
             const querySnapshot = await getDocs(path)
             let userData: ItemPrototype[] = []
             querySnapshot.forEach((userDocument) => {
@@ -60,9 +56,13 @@ export default function List(props: any) {
 
     const renderItem = ({ item }: any) => {
         return (
-            <Link href="detail">
+            <Link href={{
+                pathname: '/detail',
+                params: { id: item.id, name: item.name }
+            }}>
                 <View style={(item.status) ? styles.item : styles.itemOut}>
                     <Text>{item.name}</Text>
+                    <Ionicons name="chevron-forward-outline"/>
                 </View>
             </Link>
         )
@@ -86,7 +86,7 @@ export default function List(props: any) {
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 ListHeaderComponent={<ListHeader text="List Header" />}
-                ItemSeparatorComponent={<ListItemSeparator />}
+                ItemSeparatorComponent={ListItemSeparator}
             />
             <Modal visible={modalVisible} >
                 <View style={styles.container}>
@@ -135,10 +135,16 @@ const styles = StyleSheet.create({
     item: {
         padding: 12,
         backgroundColor: "lightblue",
+        minWidth: "100%",
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
     itemOut: {
         padding: 12,
         backgroundColor: "lightgreen",
+        minWidth: "100%",
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
     button: {
         padding: 10,

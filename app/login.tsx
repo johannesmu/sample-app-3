@@ -3,8 +3,8 @@ import { useState, useEffect, useContext } from 'react'
 import { CheckMark } from '@/components/CheckMark'
 
 import { AuthenticationContext } from '@/contexts/AuthenticationContext'
-import {  signInWithEmailAndPassword} from '@firebase/auth'
-import { useNavigation, Link } from 'expo-router'
+import {  signInWithEmailAndPassword, onAuthStateChanged} from '@firebase/auth'
+import { useNavigation, Link, router } from 'expo-router'
 
 export default function SignIn() {
 
@@ -15,12 +15,11 @@ export default function SignIn() {
     const [ validEmail, setValidEmail ] = useState(false)
 
     const fbauth = useContext( AuthenticationContext )
-    const navigation = useNavigation()
 
     const SignInUser = () => {
         signInWithEmailAndPassword( fbauth, email, password )
         .then( (user) => {
-            navigation.navigate("(tabs)")
+            router.navigate("/(tabs)")
         })
         .catch( (error) => console.log(error) )
     }
@@ -47,6 +46,17 @@ export default function SignIn() {
             setValidEmail( false )
         }
     }, [email])
+
+    onAuthStateChanged( fbauth, (user) => {
+        if( user ) {
+            // user is currently authenticated
+            // redirect user
+           router.navigate("/(tabs)")
+        }
+        else {
+            // user is not authenticated
+        }
+    })
 
     return(
         <View style={ styles.container }>

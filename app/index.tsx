@@ -1,10 +1,11 @@
 import { Text, View, TextInput, Pressable, StyleSheet } from 'react-native'
 import { useState, useEffect, useContext } from 'react'
 import { CheckMark } from '@/components/CheckMark'
+import { FirebaseError } from '@/components/FirebaseError'
 
 import { AuthenticationContext } from '@/contexts/AuthenticationContext'
-import { createUserWithEmailAndPassword} from '@firebase/auth'
-import { useNavigation, Link } from 'expo-router'
+import { createUserWithEmailAndPassword, onAuthStateChanged} from '@firebase/auth'
+import {  Link, router } from 'expo-router'
 
 export default function AuthenticationScreen() {
     const [ email, setEmail ] = useState('')
@@ -12,16 +13,16 @@ export default function AuthenticationScreen() {
     // validation
     const [ validPassword, setValidPassword ] = useState(false)
     const [ validEmail, setValidEmail ] = useState(false)
+    const [ error, setError ] = useState<any>()
 
     const fbauth = useContext( AuthenticationContext )
-    const navigation = useNavigation()
 
     const SignUpUser = () => {
         createUserWithEmailAndPassword( fbauth, email, password )
         .then( (user) => {
-            navigation.navigate("(tabs)")
+            router.navigate("/(tabs)")
         })
-        .catch( (error) => console.log(error) )
+        .catch( (error) => setError(error.message) )
     }
 
     useEffect( () => {
@@ -46,6 +47,18 @@ export default function AuthenticationScreen() {
             setValidEmail( false )
         }
     }, [email])
+
+    onAuthStateChanged( fbauth, (user) => {
+        if( user ) {
+            // user is currently authenticated
+            // redirect user
+           router.navigate("/(tabs)")
+        }
+        else {
+            // user is not authenticated
+        }
+    })
+
 
     return(
         <View style={ styles.container }>
@@ -83,6 +96,7 @@ export default function AuthenticationScreen() {
             <Link href="/login">
                 <Text>Go to sign in page</Text>
             </Link>
+            
         </View>
     )
 }
