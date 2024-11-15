@@ -1,50 +1,112 @@
-import { Text, View, StyleSheet, FlatList, Modal, Pressable, TextInput } from 'react-native'
-import { useLocalSearchParams, Link } from 'expo-router'
+import { Text, View, StyleSheet,  Pressable, TextInput, Switch } from 'react-native'
+import { useLocalSearchParams, Link, useNavigation } from 'expo-router'
 import { useEffect, useContext, useState } from 'react'
 import { FirestoreContext } from '@/contexts/FirestoreContext'
 import { AuthenticationContext } from '@/contexts/AuthenticationContext'
 import { doc, getDoc } from '@firebase/firestore'
-import { onAuthStateChanged } from '@firebase/auth'
+import { ItemPrototype } from '@/interfaces/ItemInterface'
 
-export default function DetailScreen( props:any ) {
-    const[ loaded, setLoaded ] = useState( false )
+export default function DetailScreen(props: any) {
+    const [documentData, setDocumentData] = useState<ItemPrototype | any>()
+    const [ docName, setDocName ] = useState<string>('')
+    const [ docStatus, setDocStatus ] = useState<boolean>( false )
+    const [ edited, setEdited ] = useState<boolean>( false )
 
-    const {id} = useLocalSearchParams()
-    const {name} = useLocalSearchParams()
+    let dataLoaded = false
    
 
-    const db = useContext( FirestoreContext )
-    const auth = useContext( AuthenticationContext )
+    // access navigation object via hook
+    const navigation = useNavigation()
+    // set screen options
+    useEffect( () => {
+        navigation.setOptions({ headerShown: true })
+    }, [navigation])
+
+   
+
+    const { id }: any = useLocalSearchParams()
+    const { name } = useLocalSearchParams()
+
+
+    const db = useContext(FirestoreContext)
+    const auth = useContext(AuthenticationContext)
 
     const getDocument = async () => {
-        const ref = doc( db, `users/${auth.currentUser.uid}/documents`, id )
-        const document = await getDoc( ref )
-        console.log( document.data() )
+        const ref = doc(db, `users/${auth.currentUser.uid}/documents`, id)
+        const document = await getDoc(ref)
+        let data: ItemPrototype | any = document.data()
+        data.id = id
+        setDocumentData(data)
+        setDocName( data.name )
+        setDocStatus( data.status )
+        dataLoaded = true
+        console.log(edited)
     }
+
+    useEffect( () => { 
+        if( !dataLoaded ) {
+            getDocument()
+        }      
+    }, [auth.currentUser])
 
     
 
-    onAuthStateChanged( auth, (user) => {
-        if(user) {
-            getDocument()
-        }
-    })
+    // onAuthStateChanged(auth, (user) => {
+    //     if (user) {
+    //         if(dataLoaded == false ) {
+    //             getDocument()
+    //         }
+    //     }
+    // })
 
-    return(
-        <View style={ styles.container }>
-            <View style={ styles.itemHeader }>
-                <Text style={ styles.itemHeaderText}>Detail for  {name}</Text>
+    if (!documentData) {
+        return null
+    }
+    else {
+        return (
+            <View style={styles.page}>
+                <View style={styles.itemHeader}>
+                    <Text style={styles.itemHeaderText}>Detail for  {name}</Text>
+                </View>
+                <View style={styles.container}>
+                    <Text>Document name</Text>
+                    <TextInput 
+                        value={ docName} 
+                        onChangeText={
+                            (val) => {
+                                setDocName(val)
+                                setEdited( true )
+                            }
+                        }
+                    />
+                    <Text>Document status</Text>
+                    <Switch 
+                        value={docStatus} 
+                        onValueChange={
+                            () =>{ 
+                                (docStatus) ? setDocStatus(false) : setDocStatus(true) 
+                                setEdited( true )
+                            }
+                        }
+                    />
+                    <Pressable style={ (edited) ? styles.editButton : styles.editButtonDisabled }>
+                        <Text style={ styles.editButtonText}>Save Changes?</Text>
+                    </Pressable>
+                </View>
+
+                <Link href="/(tabs)/list" style={ styles.backButton }>
+                    <Text>Go back</Text>
+                </Link>
             </View>
-            <Text>Detail for document with {name}</Text>
-            
-            <Link href="/(tabs)/list">
-                <Text>Go back</Text>
-            </Link>
-        </View>
-    )
+
+        )
+    }
 }
 
 const styles = StyleSheet.create({
+    page: {
+        flex: 1,
+    },
     container: {
         flex: 1,
         padding: 10,
@@ -54,6 +116,22 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     itemHeaderText: {
-        fontSize: 16,
+        fontSize: 20,
+        fontWeight: "bold",
+    },
+    backButton: {
+        padding: 12,
+    },
+    editButton: {
+        padding: 10,
+        backgroundColor: "darkblue",
+        marginVertical: 20,
+    },
+    editButtonText: {
+        color: "white",
+        textAlign: "center"
+    },
+    editButtonDisabled: {
+        display: "none"
     }
 })
