@@ -6,7 +6,7 @@ import { ItemPrototype } from '@/interfaces/ItemInterface'
 import { FirestoreContext } from '@/contexts/FirestoreContext'
 import { AuthenticationContext } from '@/contexts/AuthenticationContext'
 import { Ionicons } from '@expo/vector-icons'
-import { useNavigation, Link  } from 'expo-router'
+import { useNavigation, Link } from 'expo-router'
 
 import { collection, addDoc, getDocs } from '@firebase/firestore'
 
@@ -15,7 +15,7 @@ export default function List(props: any) {
     const db = useContext(FirestoreContext)
     const auth = useContext(AuthenticationContext)
     const navigation = useNavigation()
-   
+
     const [datastate, setDatastate] = useState<ItemPrototype | any>([])
     const [modalVisible, setModalVisible] = useState<boolean>(false)
     const [itemName, setItemName] = useState<string | undefined>()
@@ -56,15 +56,17 @@ export default function List(props: any) {
 
     const renderItem = ({ item }: any) => {
         return (
-            <Link href={{
-                pathname: '/detail',
-                params: { id: item.id, name: item.name }
-            }}>
-                <View style={(item.status) ? styles.item : styles.itemOut}>
+
+            <View style={(item.status) ? styles.item : styles.itemOut}>
+                <Link style={styles.itemLink} href={{
+                    pathname: '/detail',
+                    params: { id: item.id, name: item.name }
+                }}>
                     <Text>{item.name}</Text>
-                    <Ionicons name="chevron-forward-outline"/>
-                </View>
-            </Link>
+                    <Ionicons name="chevron-forward-outline" />
+                </Link>
+            </View >
+
         )
     }
 
@@ -87,6 +89,7 @@ export default function List(props: any) {
                 keyExtractor={item => item.id}
                 ListHeaderComponent={<ListHeader text="List Header" />}
                 ItemSeparatorComponent={ListItemSeparator}
+                style={styles.list}
             />
             <Modal visible={modalVisible} >
                 <View style={styles.container}>
@@ -132,12 +135,21 @@ export default function List(props: any) {
 }
 
 const styles = StyleSheet.create({
+    list: {
+        width: "100%",
+        backgroundColor: "yellow",
+    },
+    itemLink: {
+        width: "100%",
+        flexDirection: "column",
+        justifyContent: "flex-end",
+    },
     item: {
         padding: 12,
         backgroundColor: "lightblue",
-        minWidth: "100%",
+        width: "100%",
         flexDirection: "row",
-        justifyContent: "space-between",
+        
     },
     itemOut: {
         padding: 12,
@@ -158,7 +170,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: 10,
-        backgroundColor: "#f7eccd"
+        backgroundColor: "#f7eccd",
     },
     modalBar: {
         backgroundColor: "#333333",
