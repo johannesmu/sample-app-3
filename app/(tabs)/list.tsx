@@ -57,11 +57,14 @@ export default function List(props: any) {
 
     const renderItem = ({ item }: any) => {
         return (
-            <Link href={{
-                pathname: '/details/[id]',
-                params: { id: item.id, name: item.name }
-            }}>
-                <View style={(item.status) ? styles.item : styles.itemOut}>
+
+            <View style={(item.status) ? styles.item : styles.itemOut}>
+                <Link 
+                    style={styles.itemLink} 
+                    href={{
+                    pathname: '/detail',
+                    params: { id: item.id, name: item.name, status: item.status }
+                }}>
                     <Text>{item.name}</Text>
                     <Ionicons name="chevron-forward-outline" />
                 </View >
@@ -135,15 +138,24 @@ export default function List(props: any) {
 const styles = StyleSheet.create({
     list: {
         width: "100%",
+        flex: 1,
+    },
+    itemLink: {
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: 15,
     },
     item: {
-        padding: 12,
+        padding: 0,
         backgroundColor: "lightblue",
         flexDirection: "row",
         justifyContent: "space-between",
     },
     itemOut: {
-        padding: 12,
+        padding: 0,
         backgroundColor: "lightgreen",
         flexDirection: "row",
         justifyContent: "space-between",

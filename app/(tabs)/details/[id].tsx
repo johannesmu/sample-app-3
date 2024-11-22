@@ -11,9 +11,7 @@ export default function DetailScreen(props: any) {
     const [ docName, setDocName ] = useState<string>('')
     const [ docStatus, setDocStatus ] = useState<boolean>( false )
     const [ edited, setEdited ] = useState<boolean>( false )
-    const [ loaded, setLoaded ] = useState<boolean> ( false )
-
-    //let dataLoaded = false
+    const [ dataLoaded, setDataLoaded ] = useState<boolean>( false )
    
 
     // access navigation object via hook
@@ -21,12 +19,19 @@ export default function DetailScreen(props: any) {
     // set screen options
     useEffect( () => {
         navigation.setOptions({ headerShown: true })
+        console.log( navigation.isFocused() )
     }, [navigation])
 
+    useEffect( () => {
+        if( navigation.isFocused() ) {
+            getDocument()
+        }
+    }, [ navigation ])
    
 
     const { id }: any = useLocalSearchParams()
-    const { name } = useLocalSearchParams()
+    const { name }:any = useLocalSearchParams()
+    const { status }:boolean = useLocalSearchParams()
 
 
     const db = useContext(FirestoreContext)
@@ -41,25 +46,16 @@ export default function DetailScreen(props: any) {
         setDocumentData(data)
         setDocName( data.name )
         setDocStatus( data.status )
-        setEdited( false )
-        console.log( document )
+        setDataLoaded( true )
+        console.log("dataLoaded")
     }
 
     useEffect( () => { 
-        //if( !loaded && auth ) {
+        if( dataLoaded == false && auth ) {
             getDocument()
-        //}      
-    }, [id ])
+        }
+    },[dataLoaded])
 
-    
-
-    // onAuthStateChanged(auth, (user) => {
-    //     if (user) {
-    //         if(dataLoaded == false ) {
-    //             getDocument()
-    //         }
-    //     }
-    // })
 
     if (!documentData) {
         return null
