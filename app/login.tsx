@@ -4,7 +4,7 @@ import { CheckMark } from '@/components/CheckMark'
 
 import { AuthenticationContext } from '@/contexts/AuthenticationContext'
 import {  signInWithEmailAndPassword, onAuthStateChanged} from '@firebase/auth'
-import { useNavigation, Link, router } from 'expo-router'
+import {  Link, router } from 'expo-router'
 
 export default function SignIn() {
 

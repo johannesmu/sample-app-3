@@ -20,7 +20,7 @@ export default function List(props: any) {
     const [modalVisible, setModalVisible] = useState<boolean>(false)
     const [itemName, setItemName] = useState<string | undefined>()
     const [dataloaded, setDataLoaded] = useState<boolean>(false)
-
+    
     useEffect(() => {
         if (dataloaded == false && auth.currentUser) {
             getItems()
@@ -50,23 +50,22 @@ export default function List(props: any) {
                 document.id = userDocument.id
                 userData.push(document)
             })
+            console.log('data')
             setDatastate(userData)
         }
     }
 
     const renderItem = ({ item }: any) => {
         return (
-
-            <View style={(item.status) ? styles.item : styles.itemOut}>
-                <Link style={styles.itemLink} href={{
-                    pathname: '/detail',
-                    params: { id: item.id, name: item.name }
-                }}>
+            <Link href={{
+                pathname: '/details/[id]',
+                params: { id: item.id, name: item.name }
+            }}>
+                <View style={(item.status) ? styles.item : styles.itemOut}>
                     <Text>{item.name}</Text>
                     <Ionicons name="chevron-forward-outline" />
-                </Link>
-            </View >
-
+                </View >
+            </Link>
         )
     }
 
@@ -79,7 +78,6 @@ export default function List(props: any) {
             >
                 <Ionicons style={styles.buttonText} name="add-outline" size={18} />
                 <Text style={styles.buttonText}>
-
                     Add Data
                 </Text>
             </Pressable>
@@ -137,26 +135,19 @@ export default function List(props: any) {
 const styles = StyleSheet.create({
     list: {
         width: "100%",
-        backgroundColor: "yellow",
-    },
-    itemLink: {
-        width: "100%",
-        flexDirection: "column",
-        justifyContent: "flex-end",
     },
     item: {
         padding: 12,
         backgroundColor: "lightblue",
-        width: "100%",
         flexDirection: "row",
-        
+        justifyContent: "space-between",
     },
     itemOut: {
         padding: 12,
         backgroundColor: "lightgreen",
-        minWidth: "100%",
         flexDirection: "row",
         justifyContent: "space-between",
+        width: "100%",
     },
     button: {
         padding: 10,

@@ -11,8 +11,9 @@ export default function DetailScreen(props: any) {
     const [ docName, setDocName ] = useState<string>('')
     const [ docStatus, setDocStatus ] = useState<boolean>( false )
     const [ edited, setEdited ] = useState<boolean>( false )
+    const [ loaded, setLoaded ] = useState<boolean> ( false )
 
-    let dataLoaded = false
+    //let dataLoaded = false
    
 
     // access navigation object via hook
@@ -32,6 +33,7 @@ export default function DetailScreen(props: any) {
     const auth = useContext(AuthenticationContext)
 
     const getDocument = async () => {
+        console.log( auth )
         const ref = doc(db, `users/${auth.currentUser.uid}/documents`, id)
         const document = await getDoc(ref)
         let data: ItemPrototype | any = document.data()
@@ -39,15 +41,15 @@ export default function DetailScreen(props: any) {
         setDocumentData(data)
         setDocName( data.name )
         setDocStatus( data.status )
-        dataLoaded = true
-        console.log(dataLoaded)
+        setLoaded( true )
+        console.log( ref )
     }
 
     useEffect( () => { 
-        if( !dataLoaded ) {
+        if( !loaded && auth ) {
             getDocument()
         }      
-    }, [auth])
+    }, [loaded ])
 
     
 

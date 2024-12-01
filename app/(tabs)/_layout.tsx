@@ -51,7 +51,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen name="detail" options={{href:null}}></Tabs.Screen>
+      <Tabs.Screen name="details/[id]" options={{href:null}}></Tabs.Screen>
     </Tabs>
   );
 }
