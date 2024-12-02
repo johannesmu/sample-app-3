@@ -22,7 +22,10 @@ export default function AuthenticationScreen() {
         .then( (user) => {
             router.navigate("/(tabs)")
         })
-        .catch( (error) => setError(error.message) )
+        .catch( (error) => {
+            setError(error.message)
+            console.log( error )
+        } )
     }
 
     useEffect( () => {
