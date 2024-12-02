@@ -41,15 +41,15 @@ export default function DetailScreen(props: any) {
         setDocumentData(data)
         setDocName( data.name )
         setDocStatus( data.status )
-        setLoaded( true )
-        console.log( ref )
+        setEdited( false )
+        console.log( document )
     }
 
     useEffect( () => { 
-        if( !loaded && auth ) {
+        //if( !loaded && auth ) {
             getDocument()
-        }      
-    }, [loaded ])
+        //}      
+    }, [id ])
 
     
 
