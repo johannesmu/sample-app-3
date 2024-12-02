@@ -51,7 +51,7 @@ export default function SignIn() {
         if( user ) {
             // user is currently authenticated
             // redirect user
-           router.push("/(tabs)")
+           router.navigate("/(tabs)")
         }
         else {
             // user is not authenticated
