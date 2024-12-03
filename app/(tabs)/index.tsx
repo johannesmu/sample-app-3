@@ -63,7 +63,7 @@ export default function List(props: any) {
     const renderItem = ({ item }: any) => {
         return (
             <Link href={{
-                pathname: '/listdetails/[id]',
+                pathname: '../(details)/[id]',
                 params: { id: item.id, date: item.date }
             }}>
                 <View style={styles.item}>

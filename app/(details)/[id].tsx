@@ -4,10 +4,14 @@ import { useEffect, useContext, useState } from 'react'
 import { FirestoreContext } from '@/contexts/FirestoreContext'
 import { AuthenticationContext } from '@/contexts/AuthenticationContext'
 import { doc, getDoc, getDocs, collection } from '@firebase/firestore'
+
 import { ListPrototype } from '@/interfaces/ListInterface'
+import { ListEmpty } from '@/components/ListEmpty'
+import { ListHeader } from '@/components/ListHeader'
 
 export default function DetailScreen(props: any) {
     const [list, setList] = useState<ListPrototype | any>()
+    const [listItems, setListItems ] = useState<any[]> ()
     // access navigation object via hook
     const navigation = useNavigation()
     
@@ -15,7 +19,7 @@ export default function DetailScreen(props: any) {
     const { name } = useLocalSearchParams()
     // set screen options
     useEffect( () => {
-        navigation.setOptions({ headerShown: true, title: "List" })
+        navigation.setOptions({ title: name })
     }, [navigation])
 
 
@@ -37,16 +41,25 @@ export default function DetailScreen(props: any) {
         const snapshot = await getDocs( ref )
         let listItems = []
         snapshot.forEach( ( item ) => {
-            let listitem = item.data()
-            listitem.id = 
+            let listmember = item.data()
+            listmember.id = item.id
+            listItems.push(listmember)
         })
     }
 
     useEffect( () => { 
-        //if( !loaded && auth ) {
+        if(  auth ) {
+            //console.log( auth )
             getList()
-        //}      
-    }, [id ])
+        }      
+    }, [id])
+
+    // list renderer
+    const renderItems = ({item}:any) => (
+        <Text>
+            { item.name }
+        </Text>
+    )
 
     if (!list) {
         return null
@@ -54,7 +67,12 @@ export default function DetailScreen(props: any) {
     else {
         return (
             <View style={styles.page}>
-                <FlatList />
+                <FlatList 
+                    data={ listItems }
+                    renderItem={ renderItems }
+                    ListEmptyComponent={<ListEmpty text="You have no items add some to this list" />}
+                    ListHeaderComponent={<ListHeader text={ list.name } />}
+                />
             </View>
 
         )
