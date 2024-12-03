@@ -23,7 +23,7 @@ export default function List(props: any) {
     const [dataloaded, setDataLoaded] = useState<boolean>(false)
 
     useEffect(() => {
-        if (dataloaded == false && auth.currentUser) {
+        if (dataloaded == false && auth) {
             getItems()
             setDataLoaded(true)
         }
@@ -70,7 +70,7 @@ export default function List(props: any) {
                     <View>
                         <Text style={styles.itemName} >{item.name}</Text>
                         <Text>
-                            added: <DisplayDate date={item.date} />
+                            added: <DisplayDate date={item.date} mode="date" />
                         </Text>
                     </View>
                     <Ionicons name="chevron-forward-outline" size={16} />

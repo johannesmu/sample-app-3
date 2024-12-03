@@ -1,13 +1,13 @@
-import { Text, View, StyleSheet,  Pressable, TextInput, Switch, FlatList } from 'react-native'
+import { Text, View, StyleSheet,  Pressable, TextInput,  FlatList } from 'react-native'
 import { useLocalSearchParams, Link, useNavigation } from 'expo-router'
 import { useEffect, useContext, useState } from 'react'
 import { FirestoreContext } from '@/contexts/FirestoreContext'
 import { AuthenticationContext } from '@/contexts/AuthenticationContext'
-import { doc, getDoc } from '@firebase/firestore'
+import { doc, getDoc, getDocs, collection } from '@firebase/firestore'
 import { ListPrototype } from '@/interfaces/ListInterface'
 
 export default function DetailScreen(props: any) {
-    const [documentData, setDocumentData] = useState<ListPrototype | any>()
+    const [list, setList] = useState<ListPrototype | any>()
     // access navigation object via hook
     const navigation = useNavigation()
     
@@ -23,21 +23,32 @@ export default function DetailScreen(props: any) {
     const db = useContext(FirestoreContext)
     const auth = useContext(AuthenticationContext)
 
-    const getDocument = async () => {
+    const getList = async () => {
         const ref = doc(db, `listusers/${auth.currentUser.uid}/lists`, id)
-        const document = await getDoc(ref)
-        let data: ListPrototype | any = document.data()
-        data.id = id
-        setDocumentData(data)
+        const list = await getDoc(ref)
+        let listData: ListPrototype | any = list.data()
+        listData.id = id
+        setList(listData)
+    }
+
+    // get all items in the list
+    const getListItems = async () => {
+        const ref = collection( db, `listusers/${auth.currentUser.uid}/lists/${list.id}`)
+        const snapshot = await getDocs( ref )
+        let listItems = []
+        snapshot.forEach( ( item ) => {
+            let listitem = item.data()
+            listitem.id = 
+        })
     }
 
     useEffect( () => { 
         //if( !loaded && auth ) {
-            getDocument()
+            getList()
         //}      
     }, [id ])
 
-    if (!documentData) {
+    if (!list) {
         return null
     }
     else {
