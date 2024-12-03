@@ -10,7 +10,7 @@ import { AuthenticationContext } from '@/contexts/AuthenticationContext'
 import { Ionicons } from '@expo/vector-icons'
 import { Link } from 'expo-router'
 
-import { collection, addDoc, getDocs } from '@firebase/firestore'
+import { collection, addDoc, getDocs, query, orderBy } from '@firebase/firestore'
 
 export default function List(props: any) {
 
@@ -48,7 +48,8 @@ export default function List(props: any) {
     const getItems = async () => {
         if (auth.currentUser.uid) {
             const path = collection(db, `listusers/${auth.currentUser.uid}/lists`)
-            const querySnapshot = await getDocs(path)
+            const q = query( path, orderBy('date','desc') )
+            const querySnapshot = await getDocs(q)
             let userData: ListPrototype[] = []
             querySnapshot.forEach((userDocument) => {
                 let document: any = userDocument.data()
@@ -64,7 +65,7 @@ export default function List(props: any) {
         return (
             <Link href={{
                 pathname: '../(details)/[id]',
-                params: { id: item.id, date: item.date }
+                params: { id: item.id, name: item.name }
             }}>
                 <View style={styles.item}>
                     <View>

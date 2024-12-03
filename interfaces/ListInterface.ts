@@ -1,4 +1,5 @@
 export interface ListPrototype {
     id:string,
-    name:string
+    name:string,
+    date: number
 }
