@@ -6,14 +6,32 @@ export function DisplayDate( props:any ) {
     const days = ['Sun','Mon','Tues','Wed','Thu','Fri','Sat']
     const months = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
+    const plainDate = ( dateObj:Date ) => {
+        const date:Date = new Date( dateObj )
+        const dayOfTheWeek = days[date.getDay()]
+        const theDate = date.getDate()
+        const theMonth = months[date.getMonth()]
+        const theYear = date.getFullYear()
+        return `${dayOfTheWeek} ${theDate} ${theMonth} ${theYear}`
+    }
+
+    const dateDiff = ( dateObj:Date ) => {
+        const now = new Date().getTime()
+        const date = new Date( dateObj ).getTime()
+        const diff = now - date
+        const days = diff / 84600000
+        console.log( date )
+        return diff.toString()
+    }
+
     useEffect( () => {
-        const dateTime:any = new Date( props.date )
-        const dayOfTheWeek = days[dateTime.getDay()]
-        const theDate = dateTime.getDate()
-        const theMonth = months[dateTime.getMonth()]
-        const theYear = dateTime.getFullYear()
-        let saneDate = `${dayOfTheWeek} ${theDate} ${theMonth} ${theYear}`
-        setDate( saneDate )
+        if( props.mode == 'date' ) {
+            setDate( plainDate( props.date ) )
+        }
+        else if( props.mode == 'diff' ) {
+            setDate( dateDiff( props.date ) )
+        }
+        
     }, [ props.date ])
 
     return(
