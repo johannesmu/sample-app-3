@@ -1,10 +1,11 @@
 import { Text, View, TextInput, Pressable, StyleSheet } from 'react-native'
 import { useState, useEffect, useContext } from 'react'
 import { CheckMark } from '@/components/CheckMark'
+import { FirebaseError } from '@/components/FirebaseError'
 
 import { AuthenticationContext } from '@/contexts/AuthenticationContext'
 import {  signInWithEmailAndPassword, onAuthStateChanged} from '@firebase/auth'
-import { useNavigation, Link, router } from 'expo-router'
+import {  Link, router } from 'expo-router'
 
 export default function SignIn() {
 
@@ -13,6 +14,8 @@ export default function SignIn() {
     // validation
     const [ validPassword, setValidPassword ] = useState(false)
     const [ validEmail, setValidEmail ] = useState(false)
+    // error message
+    const [ error, setError ] = useState('')
 
     const fbauth = useContext( AuthenticationContext )
 
@@ -21,7 +24,7 @@ export default function SignIn() {
         .then( (user) => {
             router.navigate("/(tabs)")
         })
-        .catch( (error) => console.log(error) )
+        .catch( (error) => setError( error.code ) )
     }
 
     useEffect( () => {
@@ -60,46 +63,55 @@ export default function SignIn() {
 
     return(
         <View style={ styles.container }>
-            <Text style={ styles.title }>Sign in to your account</Text>
-            {/* email address */}
-            <Text style={ styles.label }>
-                Email address
-                <CheckMark show={ validEmail } />
-            </Text>
-            <TextInput 
-                style={ styles.field } 
-                value={ email }
-                onChangeText={ ( txt ) => setEmail( txt ) }
-                placeholder='you@example.com'
-            />
-            {/* password */}
-            <Text style={ styles.label }>
-                Password
-                <CheckMark show={ validPassword} />
-            </Text>
-            <TextInput 
-                style={ ( validPassword == true ) ? styles.validfield : styles.field } 
-                secureTextEntry={ true }
-                value={ password }
-                onChangeText={ ( txt ) => setPassword( txt ) }
-                placeholder='minimum 8 characters'
-            />
-            <Pressable 
-                style={ (validEmail && validPassword ) ? styles.button : styles.buttonDisabled } 
-                disabled={ (validEmail && validPassword) ? false : true }
-                onPress={ () => SignInUser() }
-            >
-                <Text style={ styles.buttonText } >Sign in</Text>
-            </Pressable>
-            <Link href="/">
-                <Text>Go to sign up page</Text>
-            </Link>
+            <View style={ styles.form }>
+                <Text style={ styles.title }>Sign in to your account</Text>
+                {/* email address */}
+                <Text style={ styles.label }>
+                    Email address
+                    <CheckMark show={ validEmail } />
+                </Text>
+                <TextInput
+                    style={ styles.field }
+                    value={ email }
+                    onChangeText={ ( txt ) => setEmail( txt ) }
+                    placeholder='you@example.com'
+                />
+                {/* password */}
+                <Text style={ styles.label }>
+                    Password
+                    <CheckMark show={ validPassword} />
+                </Text>
+                <TextInput
+                    style={ ( validPassword == true ) ? styles.validfield : styles.field }
+                    secureTextEntry={ true }
+                    value={ password }
+                    onChangeText={ ( txt ) => setPassword( txt ) }
+                    placeholder='minimum 8 characters'
+                />
+                <Pressable
+                    style={ (validEmail && validPassword ) ? styles.button : styles.buttonDisabled }
+                    disabled={ (validEmail && validPassword) ? false : true }
+                    onPress={ () => SignInUser() }
+                >
+                    <Text style={ styles.buttonText } >Sign in</Text>
+                </Pressable>
+                <Link href="/" style={ styles.textButton }>
+                    <Text style={ styles.textButtonText }>
+                        Don't have an account? Sign up
+                    </Text>
+                </Link>
+            </View>
+            <FirebaseError error = { error } />
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
+        padding: 10,
+        flex: 1,
+    },
+    form: {
         marginHorizontal: 30,
         marginTop: 100,
         backgroundColor: "#f1f7b7",
@@ -139,5 +151,15 @@ const styles = StyleSheet.create({
     buttonDisabled: {
         backgroundColor: "#86877f",
         padding: 8,
+    },
+    textButton: {
+        padding: 8,
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "column",
+        width: "100%",
+    },
+    textButtonText: {
+        textAlign: "center",
     }
 })

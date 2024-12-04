@@ -4,13 +4,19 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 ## Get started
 
-1. Install dependencies
+1. Create an empty directory and open it with Visual Studio Code using the *File > Open Folder*    from the menu. 
+2. Open a terminal in VScode and clone this branch using
+   ```
+   git clone -b multilist https://github.com/johannesmu/sample-app-3/ .
+   ```
+
+3. Install dependencies
 
    ```bash
    npm install
    ```
 
-2. Start the app
+4. Start the app
 
    ```bash
     npx expo start

@@ -19,8 +19,7 @@ export default function AccountScreen() {
         else {
             // user is not signed in
             setCurrentUser( null )
-            console.log("signed out")
-            router.replace("../")
+            router.navigate('/login')
         }
     })
 

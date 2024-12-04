@@ -24,24 +24,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="list"
-        options={{
-          title: 'List',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'list' : 'list-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="about"
-        options={{
-          title: 'About',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'help-circle' : 'help-circle-outline'} color={color} />
-          ),
-        }}
-      />
+     
       <Tabs.Screen
         name="account"
         options={{
@@ -51,7 +34,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen name="detail" options={{href:null}}></Tabs.Screen>
+      {/* <Tabs.Screen name="(listdetails)/[id]" options={{href:null}}></Tabs.Screen> */}
     </Tabs>
   );
 }
