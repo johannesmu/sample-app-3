@@ -35,6 +35,7 @@ export default function AccountScreen() {
 
     return (
       <View>
+        <Image style={ styles.image} source={ require('@/assets/images/profile.jpg') } />
         <Text>Account Page</Text>
         <Pressable onPress={ () => SignOutUser() }>
             <Text>Sign out</Text>
@@ -42,3 +43,10 @@ export default function AccountScreen() {
       </View>
     );
   }
+
+  const styles = StyleSheet.create( {
+    image: {
+        width: 100,
+        height: 100,
+    },
+  })

@@ -216,5 +216,5 @@ const styles = StyleSheet.create({
     modalCloseButtonText: {
         color: "#333333",
         textAlign: "center",
-    }
+    },
 })
