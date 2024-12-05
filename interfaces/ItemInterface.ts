@@ -3,4 +3,5 @@ export interface ItemPrototype {
     name:string,
     date:number,
     status:boolean,
+    note: string
 }

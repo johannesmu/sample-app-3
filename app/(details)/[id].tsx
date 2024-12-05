@@ -91,7 +91,7 @@ export default function DetailScreen(props: any) {
     const renderItems = ({ item }: any) => (
         <Link href={{ 
             pathname: "/(details)/itemdetail",
-            params: { id: item.id, name: item.name }
+            params: { id: item.id, name: item.name, list: id }
         }}
         >
             <View style={ styles.item }>
