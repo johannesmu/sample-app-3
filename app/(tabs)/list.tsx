@@ -20,7 +20,7 @@ export default function List(props: any) {
     const [modalVisible, setModalVisible] = useState<boolean>(false)
     const [itemName, setItemName] = useState<string | undefined>()
     const [dataloaded, setDataLoaded] = useState<boolean>(false)
-    
+
     useEffect(() => {
         if (dataloaded == false && auth.currentUser) {
             getItems()
@@ -59,16 +59,17 @@ export default function List(props: any) {
         return (
 
             <View style={(item.status) ? styles.item : styles.itemOut}>
-                <Link 
-                    style={styles.itemLink} 
+                <Link
+                    style={styles.itemLink}
                     href={{
-                    pathname: '/detail',
-                    params: { id: item.id, name: item.name, status: item.status }
-                }}>
+                        pathname: '/detail',
+                        params: { id: item.id, name: item.name, status: item.status }
+                    }}>
                     <Text>{item.name}</Text>
                     <Ionicons name="chevron-forward-outline" />
-                </View >
-            </Link>
+                </Link>
+            </View >
+
         )
     }
 
