@@ -56,7 +56,7 @@ export default function List(props: any) {
                 document.id = userDocument.id
                 userData.push(document)
             })
-            console.log( userData )
+            //console.log( userData )
             setDatastate(userData)
         }
     }
@@ -64,7 +64,7 @@ export default function List(props: any) {
     const renderItem = ({ item }: any) => {
         return (
             <Link href={{
-                pathname: '../(details)/[id]',
+                pathname: '../details/[id]',
                 params: { id: item.id, name: item.name }
             }}>
                 <View style={styles.item}>

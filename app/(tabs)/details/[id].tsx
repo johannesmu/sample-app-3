@@ -8,9 +8,6 @@ import { ItemPrototype } from '@/interfaces/ItemInterface'
 
 export default function DetailScreen(props: any) {
     const [documentData, setDocumentData] = useState<ItemPrototype | any>()
-    const [ docName, setDocName ] = useState<string>('')
-    const [ docStatus, setDocStatus ] = useState<boolean>( false )
-    const [ edited, setEdited ] = useState<boolean>( false )
     const [ dataLoaded, setDataLoaded ] = useState<boolean>( false )
    
 
@@ -18,47 +15,44 @@ export default function DetailScreen(props: any) {
     const navigation = useNavigation()
     // set screen options
     useEffect( () => {
-        navigation.setOptions({ headerShown: true })
-        console.log( navigation.isFocused() )
+        navigation.setOptions({ headerShown: false })
     }, [navigation])
 
-    useEffect( () => {
-        if( navigation.isFocused() ) {
-            getDocument()
-        }
-    }, [ navigation ])
    
-
     const { id }: any = useLocalSearchParams()
     const { name }:any = useLocalSearchParams()
-    const { status }:boolean = useLocalSearchParams()
+    //const { status }:boolean = useLocalSearchParams()
+    
 
 
     const db = useContext(FirestoreContext)
     const auth = useContext(AuthenticationContext)
 
-    const getDocument = async () => {
-        console.log( auth )
+    const getListItems = async () => {
+        //console.log( dataLoaded )
         const ref = doc(db, `users/${auth.currentUser.uid}/documents`, id)
-        const document = await getDoc(ref)
+        const documents = await getDoc(ref)
+        documents.forEach( (doc) => {
+            console.log( doc.data() )
+        })
         let data: ItemPrototype | any = document.data()
-        data.id = id
-        setDocumentData(data)
-        setDocName( data.name )
-        setDocStatus( data.status )
-        setDataLoaded( true )
-        console.log("dataLoaded")
+        //data.id = id
+        console.log(data)
     }
 
-    useEffect( () => { 
-        if( dataLoaded == false && auth ) {
-            getDocument()
+    useEffect( () => {
+        if(!dataLoaded) {
+            getListItems()
+            //setDataLoaded( true )
+            console.log(id)
         }
-    },[dataLoaded])
+    },[id])
 
 
     if (!documentData) {
-        return null
+        return (
+            <Text>No data</Text>
+        )
     }
     else {
         return (
@@ -67,32 +61,10 @@ export default function DetailScreen(props: any) {
                     <Text style={styles.itemHeaderText}>Detail for  {name}</Text>
                 </View>
                 <View style={styles.container}>
-                    <Text>Document name</Text>
-                    <TextInput 
-                        value={ docName} 
-                        onChangeText={
-                            (val) => {
-                                setDocName(val)
-                                setEdited( true )
-                            }
-                        }
-                    />
-                    <Text>Document status</Text>
-                    <Switch 
-                        value={docStatus} 
-                        onValueChange={
-                            () =>{ 
-                                (docStatus) ? setDocStatus(false) : setDocStatus(true) 
-                                setEdited( true )
-                            }
-                        }
-                    />
-                    <Pressable style={ (edited) ? styles.editButton : styles.editButtonDisabled }>
-                        <Text style={ styles.editButtonText}>Save Changes?</Text>
-                    </Pressable>
+                    
                 </View>
 
-                <Link href="/(tabs)/list" style={ styles.backButton }>
+                <Link href="/" style={ styles.backButton }>
                     <Text>Go back</Text>
                 </Link>
             </View>
